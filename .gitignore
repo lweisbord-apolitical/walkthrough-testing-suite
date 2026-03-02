@@ -20,3 +20,8 @@ Thumbs.db
 # IDE
 .vscode/
 .idea/
+
+# Next.js
+.next/
+node_modules/
+npm-debug.log*
