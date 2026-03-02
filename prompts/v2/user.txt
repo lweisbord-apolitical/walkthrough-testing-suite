@@ -1,0 +1,10 @@
+Create an AI adoption walkthrough for this task:
+
+Role: {role}
+Task: {task}
+Estimated time: {time}
+Category: {category}
+AI Tool: {tool}
+Primary Workspace: {workspace}
+
+Break this into phases showing how a {role} would integrate AI into this specific workflow. Be concrete and practical.

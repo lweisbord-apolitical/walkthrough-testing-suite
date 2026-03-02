@@ -1,0 +1,14 @@
+Create an AI adoption walkthrough for the following task:
+
+Role: {role}
+Task: {task}
+Estimated monthly time investment: {time}
+Task category: {category}
+AI Tool: {tool}
+Primary Workspace: {workspace}
+
+Decompose this into workflow phases that reflect how a {role} actually approaches "{task}" — not generic phases like "research, draft, review" but the specific sub-tasks where time is spent and where AI can make a measurable difference.
+
+For the prompt example, write a prompt that someone could paste into {tool} right now and get genuinely useful output for this exact task. The follow-up should reference something specific that typically appears in the initial AI response and needs refinement.
+
+For evaluation checks, name the specific failure mode on each phase — what does bad AI output actually look like for this particular step?

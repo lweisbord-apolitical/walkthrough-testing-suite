@@ -1,0 +1,81 @@
+[
+  {
+    "id": "pm-user-research",
+    "role": "Product Manager",
+    "task": "Conduct user research in collaboration with the user research team",
+    "time": "~12 hrs/mo",
+    "category": "ANALYSIS",
+    "tool": "ChatGPT Plus",
+    "workspace": "Google Workspace"
+  },
+  {
+    "id": "pm-pricing",
+    "role": "Product Manager",
+    "task": "Develop and implement pricing strategies for products",
+    "time": "~8 hrs/mo",
+    "category": "ANALYSIS"
+  },
+  {
+    "id": "pm-market-research",
+    "role": "Product Manager",
+    "task": "Conduct market research and competitive analysis to inform product strategy",
+    "time": "~10 hrs/mo",
+    "category": "ANALYSIS",
+    "tool": "ChatGPT Plus",
+    "workspace": "Google Workspace"
+  },
+  {
+    "id": "pm-strategic-plan",
+    "role": "Product Manager",
+    "task": "Develop and maintain strategic product roadmap documentation",
+    "time": "~6 hrs/mo",
+    "category": "OUTPUT",
+    "workspace": "Google Workspace"
+  },
+  {
+    "id": "pm-feature-specs",
+    "role": "Product Manager",
+    "task": "Write detailed feature specifications and acceptance criteria",
+    "time": "~15 hrs/mo",
+    "category": "OUTPUT",
+    "tool": "ChatGPT Plus"
+  },
+  {
+    "id": "pm-release-notes",
+    "role": "Product Manager",
+    "task": "Draft release notes and product update communications",
+    "time": "~4 hrs/mo",
+    "category": "OUTPUT",
+    "workspace": "Google Workspace"
+  },
+  {
+    "id": "pm-stakeholder-updates",
+    "role": "Product Manager",
+    "task": "Prepare stakeholder update presentations and status reports",
+    "time": "~8 hrs/mo",
+    "category": "OUTPUT",
+    "workspace": "Google Workspace"
+  },
+  {
+    "id": "pm-sprint-planning",
+    "role": "Product Manager",
+    "task": "Facilitate sprint planning and backlog prioritization with engineering",
+    "time": "~10 hrs/mo",
+    "category": "COORDINATION"
+  },
+  {
+    "id": "pm-cross-team",
+    "role": "Product Manager",
+    "task": "Coordinate cross-team dependencies and resolve blockers",
+    "time": "~8 hrs/mo",
+    "category": "COORDINATION"
+  },
+  {
+    "id": "pm-user-feedback",
+    "role": "Product Manager",
+    "task": "Synthesize user feedback from support tickets, surveys, and interviews into actionable insights",
+    "time": "~10 hrs/mo",
+    "category": "ANALYSIS",
+    "tool": "ChatGPT Plus"
+  }
+]
