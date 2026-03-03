@@ -102,6 +102,15 @@ export default function WalkthroughCard({
                   {phase.title}
                 </h3>
 
+                {phase.today && (
+                  <p className="text-sm mb-2">
+                    <span className="italic text-gray-400 font-medium">
+                      Today:{" "}
+                    </span>
+                    <span className="text-gray-600">{phase.today}</span>
+                  </p>
+                )}
+
                 <p className="text-sm mb-2">
                   <span className="font-medium text-gray-800">With AI: </span>
                   <span className="text-gray-600">{phase.withAI}</span>

@@ -109,7 +109,7 @@ def validate_output(data: dict) -> bool:
     for phase in data["phases"]:
         if "title" not in phase:
             return False
-        if "manualApproach" not in phase:
+        if "today" not in phase:
             return False
         if "withAI" not in phase:
             return False

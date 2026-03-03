@@ -60,7 +60,7 @@ def validate_output(data):
         return False
     if not isinstance(data["phases"], list) or len(data["phases"]) == 0:
         return False
-    return all("title" in p and "manualApproach" in p and "withAI" in p for p in data["phases"])
+    return all("title" in p and "withAI" in p for p in data["phases"])
 
 
 def is_openai_model(model):

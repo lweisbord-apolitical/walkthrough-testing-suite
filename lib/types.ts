@@ -14,7 +14,7 @@ export interface PromptExample {
 
 export interface Phase {
   title: string;
-  manualApproach: string;
+  today: string;
   withAI: string;
   evaluationCheck: string;
   promptExample?: PromptExample;

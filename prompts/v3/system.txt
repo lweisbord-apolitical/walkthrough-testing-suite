@@ -7,7 +7,7 @@ Your output must be valid JSON matching this schema exactly:
   "phases": [
     {{
       "title": "string — name of this workflow phase",
-      "manualApproach": "string — how this is specifically done today, with enough detail that someone unfamiliar could follow along",
+      "today": "string — how this is specifically done today, with enough detail that someone unfamiliar could follow along",
       "withAI": "string — the specific AI technique or approach, explaining the clever move not just 'input X receive Y'",
       "evaluationCheck": "string — a specific structural or content pattern to watch for in the AI output, not generic advice",
       "promptExample": {{

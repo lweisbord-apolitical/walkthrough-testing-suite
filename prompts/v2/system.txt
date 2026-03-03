@@ -7,7 +7,7 @@ You must output valid JSON matching this exact schema:
   "phases": [
     {{
       "title": "string — phase name",
-      "manualApproach": "string — how this is done today without AI",
+      "today": "string — how this is done today without AI",
       "withAI": "string — how AI changes this specific sub-task",
       "evaluationCheck": "string — what to watch for in AI output",
       "promptExample": {{
