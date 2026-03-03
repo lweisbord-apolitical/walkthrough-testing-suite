@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { TestCase } from "@/lib/types";
 
 export default function CaseEditor({
@@ -10,6 +11,7 @@ export default function CaseEditor({
   cases: TestCase[];
   onSave: (cases: TestCase[]) => void;
 }) {
+  const router = useRouter();
   const [editingId, setEditingId] = useState<string | null>(null);
   const [draft, setDraft] = useState<TestCase | null>(null);
 
@@ -177,6 +179,12 @@ export default function CaseEditor({
                 </div>
               </div>
               <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                <button
+                  onClick={() => router.push(`/run?case=${c.id}`)}
+                  className="text-xs bg-purple-600 text-white px-2 py-1 rounded hover:bg-purple-700"
+                >
+                  Run
+                </button>
                 <button
                   onClick={() => startEdit(c)}
                   className="text-xs text-gray-500 px-2 py-1 rounded hover:bg-gray-100"

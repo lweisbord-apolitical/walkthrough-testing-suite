@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
-import { useRouter } from "next/navigation";
+import { Suspense, useState, useEffect, useCallback } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { TestCase, PromptVersion, ModelId, OutputEnvelope, RunProgress } from "@/lib/types";
 import { getCases, getPrompts, addResult } from "@/lib/store";
 
@@ -13,14 +13,23 @@ const MODELS: { id: ModelId; label: string }[] = [
 ];
 
 export default function RunPage() {
+  return (
+    <Suspense fallback={<div className="text-sm text-gray-400 py-12 text-center">Loading...</div>}>
+      <RunPageInner />
+    </Suspense>
+  );
+}
+
+function RunPageInner() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [cases, setCases] = useState<TestCase[]>([]);
   const [prompts, setPrompts] = useState<PromptVersion[]>([]);
   const [mounted, setMounted] = useState(false);
 
   const [selectedCases, setSelectedCases] = useState<Set<string>>(new Set());
   const [promptVersion, setPromptVersion] = useState("");
-  const [model, setModel] = useState<ModelId>("claude-sonnet-4-5-20250929");
+  const [model, setModel] = useState<ModelId>("gpt-4o");
   const [temperature, setTemperature] = useState(0.6);
 
   const [running, setRunning] = useState(false);
@@ -31,10 +40,18 @@ export default function RunPage() {
     const p = getPrompts();
     setCases(c);
     setPrompts(p);
-    setSelectedCases(new Set(c.map((tc) => tc.id)));
+
+    // If ?case=<id> is in the URL, pre-select just that case
+    const caseParam = searchParams.get("case");
+    if (caseParam && c.some((tc) => tc.id === caseParam)) {
+      setSelectedCases(new Set([caseParam]));
+    } else {
+      setSelectedCases(new Set(c.map((tc) => tc.id)));
+    }
+
     setPromptVersion(p[p.length - 1]?.id || "v2");
     setMounted(true);
-  }, []);
+  }, [searchParams]);
 
   const toggleCase = (id: string) => {
     setSelectedCases((prev) => {
