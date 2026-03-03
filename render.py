@@ -79,14 +79,10 @@ def render_card(data: dict, index: int) -> str:
         connector = '<div class="phase-connector"></div>' if not is_last else ""
 
         # Phase content sections
-        manual = esc(phase.get("manualApproach", ""))
         with_ai = esc(phase.get("withAI", ""))
         eval_check = esc(phase.get("evaluationCheck", ""))
 
         sections_html = f"""
-            <div class="phase-section">
-                <span class="phase-label today-label">Today:</span> {manual}
-            </div>
             <div class="phase-section">
                 <span class="phase-label withai-label">With AI:</span> {with_ai}
             </div>
