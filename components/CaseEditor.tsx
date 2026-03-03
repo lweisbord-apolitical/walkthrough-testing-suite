@@ -108,7 +108,7 @@ export default function CaseEditor({
                     }
                   />
                 </div>
-                <div className="grid grid-cols-4 gap-3 mb-3">
+                <div className="grid grid-cols-2 gap-3 mb-3">
                   <div>
                     <label className="text-xs text-gray-500 block mb-1">
                       Time
@@ -139,38 +139,6 @@ export default function CaseEditor({
                       <option>OUTPUT</option>
                       <option>COORDINATION</option>
                     </select>
-                  </div>
-                  <div>
-                    <label className="text-xs text-gray-500 block mb-1">
-                      Tool
-                    </label>
-                    <input
-                      className="w-full text-sm border border-gray-300 rounded px-2 py-1.5"
-                      value={draft.tool || ""}
-                      onChange={(e) =>
-                        setDraft({
-                          ...draft,
-                          tool: e.target.value || undefined,
-                        })
-                      }
-                      placeholder="optional"
-                    />
-                  </div>
-                  <div>
-                    <label className="text-xs text-gray-500 block mb-1">
-                      Workspace
-                    </label>
-                    <input
-                      className="w-full text-sm border border-gray-300 rounded px-2 py-1.5"
-                      value={draft.workspace || ""}
-                      onChange={(e) =>
-                        setDraft({
-                          ...draft,
-                          workspace: e.target.value || undefined,
-                        })
-                      }
-                      placeholder="optional"
-                    />
                   </div>
                 </div>
                 <div className="flex gap-2">
@@ -206,16 +174,6 @@ export default function CaseEditor({
                 <p className="text-sm text-gray-800 truncate">{c.task}</p>
                 <div className="flex gap-2 mt-1">
                   <span className="text-[10px] text-gray-500">{c.time}</span>
-                  {c.tool && (
-                    <span className="text-[10px] text-purple-500">
-                      {c.tool}
-                    </span>
-                  )}
-                  {c.workspace && (
-                    <span className="text-[10px] text-green-600">
-                      {c.workspace}
-                    </span>
-                  )}
                 </div>
               </div>
               <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">

@@ -8,8 +8,6 @@ const VARIABLES = [
   "{task}",
   "{time}",
   "{category}",
-  "{tool}",
-  "{workspace}",
 ];
 
 function HighlightedTextarea({

@@ -7,8 +7,6 @@ export const DEFAULT_CASES: TestCase[] = [
     task: "Conduct user research in collaboration with the user research team",
     time: "~12 hrs/mo",
     category: "ANALYSIS",
-    tool: "ChatGPT Plus",
-    workspace: "Google Workspace",
   },
   {
     id: "pm-pricing",
@@ -23,8 +21,6 @@ export const DEFAULT_CASES: TestCase[] = [
     task: "Conduct market research and competitive analysis to inform product strategy",
     time: "~10 hrs/mo",
     category: "ANALYSIS",
-    tool: "ChatGPT Plus",
-    workspace: "Google Workspace",
   },
   {
     id: "pm-strategic-plan",
@@ -32,7 +28,6 @@ export const DEFAULT_CASES: TestCase[] = [
     task: "Develop and maintain strategic product roadmap documentation",
     time: "~6 hrs/mo",
     category: "OUTPUT",
-    workspace: "Google Workspace",
   },
   {
     id: "pm-feature-specs",
@@ -40,7 +35,6 @@ export const DEFAULT_CASES: TestCase[] = [
     task: "Write detailed feature specifications and acceptance criteria",
     time: "~15 hrs/mo",
     category: "OUTPUT",
-    tool: "ChatGPT Plus",
   },
   {
     id: "pm-release-notes",
@@ -48,7 +42,6 @@ export const DEFAULT_CASES: TestCase[] = [
     task: "Draft release notes and product update communications",
     time: "~4 hrs/mo",
     category: "OUTPUT",
-    workspace: "Google Workspace",
   },
   {
     id: "pm-stakeholder-updates",
@@ -56,7 +49,6 @@ export const DEFAULT_CASES: TestCase[] = [
     task: "Prepare stakeholder update presentations and status reports",
     time: "~8 hrs/mo",
     category: "OUTPUT",
-    workspace: "Google Workspace",
   },
   {
     id: "pm-sprint-planning",
@@ -78,7 +70,6 @@ export const DEFAULT_CASES: TestCase[] = [
     task: "Synthesize user feedback from support tickets, surveys, and interviews into actionable insights",
     time: "~10 hrs/mo",
     category: "ANALYSIS",
-    tool: "ChatGPT Plus",
   },
 ];
 
@@ -114,17 +105,16 @@ Rules:
 - promptExample appears on exactly ONE phase (the most instructive one)
 - humanEdge appears on the LAST phase only
 - evaluationCheck appears on EVERY phase with specific, distinct checks
-- Phases should not be generic "prepare/do/finish" — they should reflect real workflow steps`,
+- Phases should not be generic "prepare/do/finish" — they should reflect real workflow steps
+- Keep walkthrough AI-tool-agnostic — don't assume a specific AI product, describe techniques that work across tools`,
     userPrompt: `Create an AI adoption walkthrough for this task:
 
 Role: {role}
 Task: {task}
 Estimated time: {time}
 Category: {category}
-AI Tool: {tool}
-Primary Workspace: {workspace}
 
-Break this into phases showing how a {role} would integrate AI into this specific workflow. Be concrete and practical.`,
+Break this into phases showing how a {role} would integrate AI into this specific workflow. Be concrete and practical. Do not assume any specific AI tool — describe techniques that work with any capable AI assistant.`,
   },
   {
     id: "v3",
@@ -158,21 +148,18 @@ Critical rules:
 - humanEdge appears ONLY on the last phase
 - evaluationCheck must be DIFFERENT and SPECIFIC on every phase — name the actual failure mode, not "check for accuracy"
 - The withAI description should explain the technique (chain-of-thought, structured output, role-playing, etc.) not just "use AI to..."
-- If a tool is specified, reference its actual features by name where relevant
-- If a workspace is specified, describe how AI output integrates into that workspace's formats and conventions
-- Prompts must be complete enough to paste directly into a chat interface and get useful output`,
+- Prompts must be complete enough to paste directly into a chat interface and get useful output
+- Keep walkthrough AI-tool-agnostic — describe techniques that work with any capable AI assistant (ChatGPT, Claude, Grok, etc.), not features specific to one product`,
     userPrompt: `Create an AI adoption walkthrough for the following task:
 
 Role: {role}
 Task: {task}
 Estimated monthly time investment: {time}
 Task category: {category}
-AI Tool: {tool}
-Primary Workspace: {workspace}
 
 Decompose this into workflow phases that reflect how a {role} actually approaches "{task}" — not generic phases like "research, draft, review" but the specific sub-tasks where time is spent and where AI can make a measurable difference.
 
-For the prompt example, write a prompt that someone could paste into {tool} right now and get genuinely useful output for this exact task. The follow-up should reference something specific that typically appears in the initial AI response and needs refinement.
+For the prompt example, write a prompt that someone could paste into any AI assistant right now and get genuinely useful output for this exact task. The follow-up should reference something specific that typically appears in the initial AI response and needs refinement.
 
 For evaluation checks, name the specific failure mode on each phase — what does bad AI output actually look like for this particular step?`,
   },

@@ -55,16 +55,6 @@ export default function WalkthroughCard({
           {input.task}
         </h2>
         <div className="flex gap-2 mt-2">
-          {input.tool && (
-            <span className="text-[11px] bg-purple-50 text-purple-600 px-2 py-0.5 rounded">
-              {input.tool}
-            </span>
-          )}
-          {input.workspace && (
-            <span className="text-[11px] bg-green-50 text-green-600 px-2 py-0.5 rounded">
-              {input.workspace}
-            </span>
-          )}
           <span className="text-[11px] bg-gray-100 text-gray-500 px-2 py-0.5 rounded">
             {meta.model}
           </span>

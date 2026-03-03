@@ -4,8 +4,6 @@ export interface TestCase {
   task: string;
   time: string;
   category: "ANALYSIS" | "OUTPUT" | "COORDINATION";
-  tool?: string;
-  workspace?: string;
 }
 
 export interface PromptExample {
