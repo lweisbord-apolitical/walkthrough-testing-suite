@@ -8,8 +8,10 @@ import { getCases, getPrompts, addResult } from "@/lib/store";
 const MODELS: { id: ModelId; label: string }[] = [
   { id: "claude-sonnet-4-5-20250929", label: "Claude Sonnet 4.5" },
   { id: "claude-opus-4-5-20250918", label: "Claude Opus 4.5" },
-  { id: "gpt-4o", label: "GPT-4o" },
-  { id: "gpt-4o-mini", label: "GPT-4o Mini" },
+  { id: "gpt-5.2", label: "GPT-5.2" },
+  { id: "gpt-5-mini", label: "GPT-5 Mini" },
+  { id: "gpt-4.1", label: "GPT-4.1" },
+  { id: "o4-mini", label: "o4-mini (reasoning)" },
 ];
 
 export default function RunPage() {
@@ -29,7 +31,7 @@ function RunPageInner() {
 
   const [selectedCases, setSelectedCases] = useState<Set<string>>(new Set());
   const [promptVersion, setPromptVersion] = useState("");
-  const [model, setModel] = useState<ModelId>("gpt-4o");
+  const [model, setModel] = useState<ModelId>("gpt-5.2");
   const [temperature, setTemperature] = useState(0.6);
 
   const [running, setRunning] = useState(false);

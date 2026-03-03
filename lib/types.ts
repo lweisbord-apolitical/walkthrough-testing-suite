@@ -48,8 +48,10 @@ export interface PromptVersion {
 export type ModelId =
   | "claude-sonnet-4-5-20250929"
   | "claude-opus-4-5-20250918"
-  | "gpt-4o"
-  | "gpt-4o-mini";
+  | "gpt-5.2"
+  | "gpt-5-mini"
+  | "gpt-4.1"
+  | "o4-mini";
 
 export interface RunConfig {
   promptVersion: string;
