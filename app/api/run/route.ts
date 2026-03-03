@@ -17,7 +17,23 @@ function fillTemplate(template: string, testCase: TestCase): string {
     .replace(/\{category\}/g, testCase.category);
 }
 
-// Anthropic with web_search tool — agentic loop
+// Extract JSON from a string that may contain markdown fences or surrounding text
+function extractJSON(text: string): string {
+  // Try to find JSON in markdown fences first
+  const fenced = text.match(/```(?:json)?\s*\n?([\s\S]*?)\n?```/);
+  if (fenced) return fenced[1].trim();
+
+  // Try to find a JSON object directly
+  const jsonMatch = text.match(/\{[\s\S]*\}/);
+  if (jsonMatch) return jsonMatch[0];
+
+  return text;
+}
+
+// Anthropic Messages API with server-side web_search tool.
+// web_search is a server tool — Anthropic executes it automatically and returns
+// the final response in a single call. If stop_reason is "pause_turn" (hit the
+// 10-iteration server loop limit), we send the response back to continue.
 async function callAnthropic(
   systemPrompt: string,
   userPrompt: string,
@@ -27,20 +43,13 @@ async function callAnthropic(
   const apiKey = process.env.ANTHROPIC_API_KEY;
   if (!apiKey) throw new Error("ANTHROPIC_API_KEY not set");
 
-  const tools = [
-    {
-      type: "web_search_20250305",
-      name: "web_search",
-      max_uses: 5,
-    },
-  ];
-
   let messages: Array<{ role: string; content: unknown }> = [
     { role: "user", content: userPrompt },
   ];
 
-  // Agentic loop — keep going until we get a final text response (end_turn)
-  for (let turn = 0; turn < 10; turn++) {
+  // Normally one call is enough since web_search runs server-side.
+  // Loop only handles the rare "pause_turn" case.
+  for (let attempt = 0; attempt < 3; attempt++) {
     const res = await fetch("https://api.anthropic.com/v1/messages", {
       method: "POST",
       headers: {
@@ -53,7 +62,13 @@ async function callAnthropic(
         max_tokens: 16000,
         temperature,
         system: systemPrompt,
-        tools,
+        tools: [
+          {
+            type: "web_search_20250305",
+            name: "web_search",
+            max_uses: 5,
+          },
+        ],
         messages,
       }),
     });
@@ -65,58 +80,41 @@ async function callAnthropic(
 
     const data = await res.json();
 
-    // If stop reason is end_turn, extract the text block
-    if (data.stop_reason === "end_turn") {
-      const textBlock = data.content.find(
-        (b: { type: string }) => b.type === "text"
-      );
-      if (!textBlock) throw new Error("No text in final response");
-      return JSON.parse(textBlock.text);
-    }
-
-    // If the model used tools, add the assistant message and continue
-    // The API handles tool results automatically for server-side tools like web_search
-    // But we still need to check if there's a text block in a tool_use response
-    if (data.stop_reason === "tool_use") {
-      // Add the assistant's response to messages
-      messages.push({ role: "assistant", content: data.content });
-
-      // For server-side tools (web_search), Anthropic handles execution.
-      // We need to provide tool_result blocks for each tool_use.
-      // But web_search is a server-side tool — results come back in the same response.
-      // Check if there are server_tool_use blocks with results already
-      const serverResults = data.content.filter(
-        (b: { type: string }) => b.type === "web_search_tool_result"
-      );
-
-      if (serverResults.length > 0) {
-        // Server-side tool results are already in the content, just continue
-        // The model will continue on the next iteration
-        messages.push({
-          role: "user",
-          content: [{ type: "text", text: "Continue generating the JSON output based on your research." }],
-        });
-      } else {
-        // Shouldn't happen with web_search, but handle gracefully
-        break;
-      }
-      continue;
-    }
-
-    // Any other stop reason — try to extract text
+    // Extract text from the response content blocks
     const textBlock = data.content.find(
       (b: { type: string }) => b.type === "text"
     );
-    if (textBlock) {
-      return JSON.parse(textBlock.text);
+
+    if (data.stop_reason === "end_turn" && textBlock) {
+      return JSON.parse(extractJSON(textBlock.text));
     }
 
-    break;
+    // pause_turn means the server-side tool loop hit its limit.
+    // Send the response back so Claude can continue.
+    if (data.stop_reason === "pause_turn") {
+      messages.push({ role: "assistant", content: data.content });
+      messages.push({
+        role: "user",
+        content: "Continue — finish generating the JSON output.",
+      });
+      continue;
+    }
+
+    // Any other stop reason with text — try to parse
+    if (textBlock) {
+      return JSON.parse(extractJSON(textBlock.text));
+    }
+
+    throw new Error(
+      `Unexpected Anthropic response: stop_reason=${data.stop_reason}`
+    );
   }
 
-  throw new Error("Failed to get final response after tool use loop");
+  throw new Error("Anthropic: exceeded max continuation attempts");
 }
 
+// OpenAI Responses API with built-in web_search tool.
+// web_search executes server-side — one call, results included automatically.
 async function callOpenAI(
   systemPrompt: string,
   userPrompt: string,
@@ -126,7 +124,7 @@ async function callOpenAI(
   const apiKey = process.env.OPENAI_API_KEY;
   if (!apiKey) throw new Error("OPENAI_API_KEY not set");
 
-  const res = await fetch("https://api.openai.com/v1/chat/completions", {
+  const res = await fetch("https://api.openai.com/v1/responses", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -135,32 +133,13 @@ async function callOpenAI(
     body: JSON.stringify({
       model,
       temperature,
-      max_tokens: 4096,
-      messages: [
-        { role: "system", content: systemPrompt },
-        { role: "user", content: userPrompt },
-      ],
+      instructions: systemPrompt,
+      input: userPrompt,
       tools: [
         {
-          type: "function",
-          function: {
-            name: "web_search",
-            description:
-              "Search the web for current information relevant to the task being analyzed",
-            parameters: {
-              type: "object",
-              properties: {
-                query: {
-                  type: "string",
-                  description: "The search query",
-                },
-              },
-              required: ["query"],
-            },
-          },
+          type: "web_search",
         },
       ],
-      tool_choice: "auto",
     }),
   });
 
@@ -170,48 +149,28 @@ async function callOpenAI(
   }
 
   const data = await res.json();
-  const msg = data.choices[0].message;
 
-  // If tool calls were made, we can't actually execute web search for OpenAI
-  // (no built-in server-side execution), so just re-call without tools
-  if (msg.tool_calls && msg.tool_calls.length > 0) {
-    // Fall back to a plain call without tools
-    const fallbackRes = await fetch(
-      "https://api.openai.com/v1/chat/completions",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${apiKey}`,
-        },
-        body: JSON.stringify({
-          model,
-          temperature,
-          max_tokens: 4096,
-          messages: [
-            { role: "system", content: systemPrompt },
-            { role: "user", content: userPrompt },
-          ],
-        }),
-      }
+  // The Responses API returns an output array of items.
+  // Find the message item with the text content.
+  const messageItem = data.output?.find(
+    (item: { type: string }) => item.type === "message"
+  );
+
+  if (messageItem) {
+    const textContent = messageItem.content?.find(
+      (c: { type: string }) => c.type === "output_text"
     );
-
-    if (!fallbackRes.ok) {
-      const err = await fallbackRes.text();
-      throw new Error(`OpenAI API error ${fallbackRes.status}: ${err}`);
+    if (textContent) {
+      return JSON.parse(extractJSON(textContent.text));
     }
-
-    const fallbackData = await fallbackRes.json();
-    const text = fallbackData.choices[0].message.content;
-    const cleaned = text
-      .replace(/^```json?\n?/m, "")
-      .replace(/\n?```$/m, "");
-    return JSON.parse(cleaned);
   }
 
-  const text = msg.content;
-  const cleaned = text.replace(/^```json?\n?/m, "").replace(/\n?```$/m, "");
-  return JSON.parse(cleaned);
+  // Fallback: try the top-level output_text if present
+  if (data.output_text) {
+    return JSON.parse(extractJSON(data.output_text));
+  }
+
+  throw new Error("No text content in OpenAI response");
 }
 
 export async function POST(req: NextRequest) {
